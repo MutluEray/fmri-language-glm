@@ -1,0 +1,17 @@
+README.md
+pyproject.toml
+src/fmriglm/__init__.py
+src/fmriglm/data.py
+src/fmriglm/design.py
+src/fmriglm/glm.py
+src/fmriglm/hrf.py
+src/fmriglm/mc.py
+src/fmriglm/pipeline.py
+src/fmriglm/stats.py
+src/fmriglm/viz.py
+src/fmriglm.egg-info/PKG-INFO
+src/fmriglm.egg-info/SOURCES.txt
+src/fmriglm.egg-info/dependency_links.txt
+src/fmriglm.egg-info/requires.txt
+src/fmriglm.egg-info/top_level.txt
+tests/test_core.py

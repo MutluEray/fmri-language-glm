@@ -1,0 +1,6 @@
+numpy
+scipy
+pandas
+matplotlib
+nibabel
+nilearn>=0.10.3

@@ -1,0 +1,11 @@
+Metadata-Version: 2.4
+Name: fmriglm
+Version: 0.1.0
+Summary: From-scratch fMRI GLM methods study on a language localizer
+Requires-Python: >=3.9
+Requires-Dist: numpy
+Requires-Dist: scipy
+Requires-Dist: pandas
+Requires-Dist: matplotlib
+Requires-Dist: nibabel
+Requires-Dist: nilearn>=0.10.3
