@@ -33,7 +33,7 @@ strictly periodic, period ≈ 28.6 s). It is downloaded at runtime and never com
    inflated; a single-condition covert-verb-generation vs rest contrast (7 blocks, 60 s period) is inflated even under the bias-corrected model and has a large excess beyond
    noise, so it is not interpretable as a localised map.
 
-## Results (single execution on the demo dataset; raw outputs in `results/`, git-ignored)
+## Results 
 
 ### 1. Validation vs nilearn (`02`, subject 01, spm HRF, cosine drift, AR(1))
 dof = 214; 187 voxels pass FDR q<.05; max t = 8.83; r = 0.99991, mean |Δt| = 0.013 vs nilearn.
@@ -238,17 +238,6 @@ NOT more reproducible across sessions here — spatial correlations and Dice are
 if anything less stable for two contrasts (Lips, AllTask). A model can be better-calibrated without being more reliable; these are different properties and
 one does not imply the other.
 
-## What I would and would not claim
-
-- Would claim: correct OLS core verified against known truth and nilearn; HRF modelling dominates; standard first-level inference is
-  miscalibrated on this data and per-voxel AR(1) is itself slightly anticonservative (in nilearn too); a known bias correction helps;
-  subject-level inflation is reproduced by phase-randomised noise with each subject's spectrum; double-dipping is large; the ROI pattern is left-lateralised
-  and only partly language-specific; on rest data with fake designs, inflation grows with block period and the bias-corrected AR(1) helps throughout.
-- Would claim (continued): single-session voxelwise task-fMRI maps in a small, distortion-uncorrected dataset are not reliably reproducible across sessions, consistent with the
-  published test-retest-reliability literature; better first-level calibration did not improve cross-session reliability in this data.
-- Would not claim: a proven cause for the remaining inflation; a novel method; a full language-network map; any claim of having implemented preprocessing (fMRIPrep was run and its outputs audited; it was not written here);
-  that the specific ICC/correlation values generalise beyond this one subject and dataset.
-
 ## Limitations
 
 - Small, preprocessed demo dataset; one run per subject; 10 subjects; one TR and one block design. Group p-values are coarse.
@@ -265,16 +254,6 @@ one does not imply the other.
 - Test-retest: one subject, one session pair, independently preprocessed (so some unreliability reflects registration differences, not only neural/statistical noise); reliability
   metrics (spatial r, Dice) were not benchmarked against a self-correlation or shuffled-map control before being reported.
 - The cluster-extent threshold is a heuristic, not FWE control. Several analysis variants were explored (smoothing levels, nulls, models, ROI sets); all are reported.
-
-## Corrections made along the way (kept for transparency)
-
-- Motion regressors were initially dropped silently (column names differ in this dataset); fixed.
-- A circular-shift null was replaced because the design is strictly periodic; random-block and quarter-shift nulls were used instead.
-- I first attributed the AR(1) shortfall to per-voxel estimation noise; a check showed a global rho did not help. The cause is a
-  negative bias in the residual-based estimate, which a design-specific correction removes on white noise.
-- The first surrogate experiment was conservative because task regressors had been fitted out of the residuals; corrected with nuisance-only residuals.
-- I first read the TR 2.5 s resting-state group as a TR effect; the file headers showed it is two subjects with only 77 scans, so it is confounded with scan length.
-- An early reading of group peaks as left-lateralised came from an image at a different smoothing level; the atlas analysis shows bilateral voxelwise peaks.
 
 ## Reproduce
 
@@ -310,20 +289,6 @@ python3 scripts/17_test_retest.py
 
 Common flags: `--pos --neg --hrf --drift --noise --fwhm --out --data-dir`. The Harvard-Oxford atlas is fetched through nilearn on first use (needs internet).
 
-## Still to do (see `TODO.md` if present)
-
-Empirical-null check on the true-design t-maps; higher-order AR / spectrum-aware whitening; a permutation cluster-FWE test; short-TR (multiband) generalisation with another rest dataset; a remedy test for slow designs (higher-order AR / spectrum-aware whitening); a self-test / shuffled-map control for the test-retest metrics in `17`; more subjects for the test-retest analysis; an independent language
-reference map for overlap; a second software package (SPM/FSL) on one subject.
-
-## Repo layout
-
-```
-src/fmriglm/            hrf, design, glm (OLS, AR(1), bias-corrected AR(1)), stats, mc (FDR, sign-flip max-T, clusters), data, viz, pipeline
-scripts/                01 inspect, 02 validate, 03 ablation, 04 random-block null, 05 group, 06 split-half fROI, 07 quarter-shift null,
-                        08 QC, 09 motion sensitivity, 10 atlas validation, 11 known-truth simulation, 12 reference check, 13 resting-state null, 14 inspect raw BIDS, 15 GLM on BIDS runs (fMRIPrep or raw), 16 QC and surrogate null on BIDS runs, 17 test-retest reliability
-tests/                  synthetic unit tests
-legacy_matlab_port/     Python ports of two course-lab GUIs (teaching demo only)
-```
 
 ## Attribution and related work
 
@@ -339,7 +304,3 @@ legacy_matlab_port/     Python ports of two course-lab GUIs (teaching demo only)
 - Test-retest reliability of task fMRI: Bennett, C. M., & Miller, M. B. (2010), *Annals of the NY Academy of Sciences*; Elliott, M. L., et al. (2020), "What Is the Test-Retest
   Reliability of Common Task-Functional MRI Measures? New Empirical Evidence and a Meta-Analysis," *Psychological Science*, 31(7), 792-806 (mean ICC = 0.397 across 90 studies;
   ROI-level ICCs 0.067-0.485 in HCP/Dunedin samples); Kragel, P. A., et al. (2021), commentary, *Psychological Science*, 32(4), 622-626. Verify details before citing formally.
-
-## License
-
-Not chosen yet. Pick one before publishing (MIT is common for code).
